@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08090b">
+<title>MINI CLOCK — MINI LABS</title>
+<style>
+:root{color-scheme:dark;--bg:#08090b;--panel:#111318;--text:#f5f4ef;--muted:#8f929b;--accent:#f1a75b}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{min-height:100svh;overflow:hidden;background:radial-gradient(ellipse at 50% 110%,#34231b 0%,transparent 50%),var(--bg);transition:background .6s,color .4s}
+main{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;position:relative}.brand{position:absolute;top:28px;left:30px;font-size:11px;letter-spacing:.22em;color:var(--muted);font-weight:650}.status{position:absolute;top:28px;right:30px;color:var(--muted);font-size:12px;letter-spacing:.08em}
+.clock-wrap{text-align:center;position:relative;z-index:1}.eyebrow{font-size:clamp(12px,1.6vw,15px);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}.time{font-size:clamp(92px,22vw,270px);font-weight:250;letter-spacing:-.085em;line-height:.9;font-variant-numeric:tabular-nums;text-shadow:0 0 70px #f1a75b12;white-space:nowrap}.time .colon{opacity:.72;animation:pulse 2s infinite}.date{font-size:clamp(17px,2.6vw,28px);font-weight:400;color:#c9c7c1;margin-top:28px;letter-spacing:.015em}.bottom{position:absolute;bottom:26px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}.btn{border:1px solid #ffffff1c;background:#ffffff08;color:#d9d8d3;padding:10px 15px;border-radius:999px;font:inherit;font-size:12px;cursor:pointer;backdrop-filter:blur(14px);transition:.2s}.btn:hover{background:#ffffff16;border-color:#ffffff40}.hint{position:absolute;bottom:30px;right:30px;color:#777a83;font-size:11px}
+body.cream{--bg:#e9e1d2;--text:#29251f;--muted:#797165;--accent:#9c5728;background:radial-gradient(ellipse at 50% 110%,#d7bca2 0%,transparent 55%),var(--bg);color:var(--text)}body.cream .date{color:#5e574d}body.cream .btn{color:#39332c;border-color:#00000020;background:#00000006}body.cream .btn:hover{background:#00000010}
+body.mint{--bg:#07120f;--text:#e7fff4;--muted:#829b90;--accent:#8de4bf;background:radial-gradient(ellipse at 50% 110%,#103b2d 0%,transparent 55%),var(--bg)}
+body.blue{--bg:#080d1a;--text:#eef3ff;--muted:#8996b3;--accent:#9cb8ff;background:radial-gradient(ellipse at 50% 110%,#182d5b 0%,transparent 55%),var(--bg)}
+@keyframes pulse{0%,45%,100%{opacity:.72}50%,95%{opacity:.3}}
+@media(max-width:600px){.brand{top:20px;left:18px}.status{top:20px;right:18px}.hint{display:none}.time{font-size:clamp(76px,22vw,140px)}.date{margin-top:20px}main{padding:18px}.bottom{bottom:20px}}
+@media(orientation:landscape) and (max-height:520px){.time{font-size:min(29vw,45vh)}.eyebrow{margin-bottom:12px}.date{margin-top:12px}.bottom{bottom:12px}.brand,.status{top:16px}.hint{bottom:16px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">MINI LABS <span style="opacity:.45">/</span> MINI CLOCK</div>
+  <div class="status" id="mode">AMBIENT MODE</div>
+  <section class="clock-wrap" aria-label="Clock">
+    <div class="eyebrow" id="greeting">A LITTLE MOMENT</div>
+    <div class="time" aria-live="off"><span id="hours">12</span><span class="colon">:</span><span id="minutes">00</span></div>
+    <div class="date" id="date">Sunday, October 25</div>
+  </section>
+  <div class="bottom">
+    <button class="btn" id="format">24-HOUR TIME</button>
+    <button class="btn" id="theme">CHANGE AMBIENCE</button>
+    <button class="btn" id="full">FULL SCREEN ↗</button>
+  </div>
+  <div class="hint">Best viewed in landscape</div>
+</main>
+<script>
+let use24=false, themeIndex=0;
+const themes=['','cream','mint','blue'];
+const pad=n=>String(n).padStart(2,'0');
+function tick(){
+ const now=new Date();let h=now.getHours();const suffix=h>=12?'PM':'AM';
+ document.getElementById('hours').textContent=pad(use24?h:(h%12||12));
+ document.getElementById('minutes').textContent=pad(now.getMinutes());
+ document.getElementById('date').textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+ document.getElementById('greeting').textContent=h<12?'A FRESH START':h<17?'TAKE YOUR TIME':h<21?'SLOW DOWN A LITTLE':'REST YOUR MIND';
+ document.getElementById('mode').textContent=use24?'24-HOUR MODE':'AMBIENT MODE';
+ document.title=(use24?pad(h):String(h%12||12))+':'+pad(now.getMinutes())+' — MINI CLOCK';
+}
+document.getElementById('format').addEventListener('click',()=>{use24=!use24;document.getElementById('format').textContent=use24?'12-HOUR TIME':'24-HOUR TIME';tick()});
+document.getElementById('theme').addEventListener('click',()=>{themeIndex=(themeIndex+1)%themes.length;document.body.className=themes[themeIndex];});
+document.getElementById('full').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){document.getElementById('mode').textContent='FULL SCREEN UNAVAILABLE'}});
+tick();setInterval(tick,1000);
+</script>
+</body>
+</html>
