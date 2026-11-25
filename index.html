@@ -13,7 +13,7 @@
 #cursor-glow{position:fixed;left:0;top:0;width:320px;height:320px;z-index:2147483647;pointer-events:none;opacity:0;transform:translate3d(-600px,-600px,0) translate(-50%,-50%);background:radial-gradient(circle,rgba(240,75,24,.20) 0%,rgba(240,75,24,.12) 22%,rgba(240,75,24,.045) 48%,transparent 72%);filter:blur(8px);will-change:transform;transition:opacity .18s ease,width .2s ease,height .2s ease}
 body.cursor-glow-ready #cursor-glow{opacity:1}
 body.cursor-glow-hover #cursor-glow{width:390px;height:390px;background:radial-gradient(circle,rgba(240,75,24,.24) 0%,rgba(240,75,24,.14) 24%,rgba(240,75,24,.05) 50%,transparent 72%)}
-@media(hover:none) and (pointer:coarse){#cursor-glow{display:none!important}}
+/* The glow appears whenever an actual mouse movement is detected. */
 </style>
 </head>
 <body>
@@ -64,7 +64,6 @@ document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 (function(){
   var glow=document.getElementById('cursor-glow');
   if(!glow) return;
-  if(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
   var x=0,y=0,frame=0;
   function move(e){
     x=e.clientX; y=e.clientY;
